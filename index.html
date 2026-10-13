@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PLAYBOOK — Tournament Operating System</title>
+<meta name="description" content="PLAYBOOK — production-grade sports tournament management, live scoring, standings, analytics and operations platform. SQL Data Layer → Python Analytics Engine → Power BI Reporting Layer. Built by Faizan Farooqui for SPOLTO-type organisations.">
+<style>
+:root{--bg:#0b1220;--surface:#121c33;--surface2:#182642;--border:#24365e;--text:#eaf0ff;--dim:#93a5cc;--accent:#2e7cf6;--live:#e5484d;--green:#1f9d66;--amber:#e8930c}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text)}
+a{color:var(--accent)}header{position:sticky;top:0;z-index:10;background:#0e1830;border-bottom:1px solid var(--border);padding:14px 20px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.logo{width:38px;height:38px;border-radius:10px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:20px}
+h1{font-size:22px;margin:0;letter-spacing:-.5px} .tag{color:var(--dim);font-size:11px;letter-spacing:.12em}
+main{max-width:1180px;margin:0 auto;padding:20px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:18px 0}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px}.kpi b{font-size:28px;display:block}.kpi span{color:var(--dim);font-size:13px}
+section{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px;margin:16px 0}
+h2{margin:0 0 12px;font-size:18px} table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:8px 10px;border-bottom:1px solid var(--border);text-align:left}th{color:var(--dim);font-weight:600}
+.live{display:inline-block;background:var(--live);color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}.grid section{margin:0}
+.match{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)} .score{font-weight:800;font-size:18px;white-space:nowrap}
+.bar{height:10px;background:var(--surface2);border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;background:var(--accent)}
+code,pre{font-family:ui-monospace,Menlo,monospace}pre{background:#0a0f1d;border:1px solid var(--border);border-radius:12px;padding:14px;overflow:auto;font-size:12px;line-height:1.5}
+footer{color:var(--dim);text-align:center;padding:28px;font-size:13px}.pill{display:inline-block;border:1px solid var(--border);border-radius:999px;padding:4px 10px;font-size:12px;color:var(--dim);margin:2px}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">P</div>
+  <div><h1>PLAYBOOK</h1><div class="tag">SQL DATA LAYER → PYTHON ANALYTICS ENGINE → POWER BI REPORTING</div></div>
+  <div style="margin-left:auto"><span class="live">● 5 LIVE</span></div>
+</header>
+<main>
+  <p style="color:var(--dim);max-width:760px">Production-grade tournament operating system for organisations like <strong style="color:var(--text)">SPOLTO</strong> — tournaments, live scoring, standings, leaderboards, analytics, operations centre, RBAC and public pages. All critical calculations happen server-side in SQL, the Python/Pandas engine generates fixtures, ratings and insights, and Power BI consumes a star-schema dataset.</p>
+
+  <div class="kpis">
+    <div class="kpi"><b>4</b><span>Organisations</span></div>
+    <div class="kpi"><b>4</b><span>Tournaments</span></div>
+    <div class="kpi"><b>27</b><span>Teams</span></div>
+    <div class="kpi"><b>290</b><span>Players</span></div>
+    <div class="kpi"><b>50</b><span>Matches</span></div>
+    <div class="kpi"><b>20</b><span>Completed</span></div>
+    <div class="kpi"><b>466</b><span>Match events</span></div>
+    <div class="kpi"><b>8</b><span>Venues</span></div>
+  </div>
+
+  <section><h2>🔴 Live matches</h2>
+    <div class="match"><div><strong>TechM Titans vs CloudNine United</strong><br><small style="color:var(--dim)">FB-013 · Corporate Football Cup · SPOLTO Arena — Turf 1 · 34'</small></div><div class="score">0 – 3</div></div>
+    <div class="match"><div><strong>FinEdge Warriors vs DataWolves FC</strong><br><small style="color:var(--dim)">FB-014 · Corporate Football Cup · Turf 2 · 43'</small></div><div class="score">1 – 2</div></div>
+    <div class="match"><div><strong>Silicon Sixers vs Pixel Panthers</strong><br><small style="color:var(--dim)">CR-007 · Corporate Cricket League · MCA Ground · 34'</small></div><div class="score">159 – 111</div></div>
+    <div class="match"><div><strong>Agile Avengers vs Cloud Chasers</strong><br><small style="color:var(--dim)">CR-008 · Corporate Cricket League · MCA Ground · 43'</small></div><div class="score">115 – 139</div></div>
+    <div class="match" style="border:0"><div><strong>Net Ninjas vs Court Kings</strong><br><small style="color:var(--dim)">BD-003 · SPOLTO Badminton Championship · Indoor Court 3 · 18'</small></div><div class="score">15 – 12</div></div>
+  </section>
+
+  <div class="grid">
+    <section><h2>🏆 Standings — Corporate Football Cup 2026</h2><p style="color:var(--dim);font-size:13px">Computed server-side in SQL — never on the frontend.</p>
+      <table><tr><th>#</th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GD</th><th>Pts</th></tr>
+      <tr><td>1</td><td><strong>CloudNine United</strong></td><td>3</td><td>3</td><td>0</td><td>0</td><td>+5</td><td><strong>9</strong></td></tr>
+      <tr><td>2</td><td>FinEdge Warriors</td><td>3</td><td>2</td><td>1</td><td>0</td><td>+3</td><td>7</td></tr>
+      <tr><td>3</td><td>TechM Titans</td><td>3</td><td>2</td><td>0</td><td>1</td><td>+4</td><td>6</td></tr>
+      <tr><td>4</td><td>DataWolves FC</td><td>3</td><td>2</td><td>0</td><td>1</td><td>+1</td><td>6</td></tr>
+      <tr><td>5</td><td>Pune Paltan</td><td>3</td><td>1</td><td>1</td><td>1</td><td>-1</td><td>4</td></tr>
+      <tr><td>6</td><td>ByteForce FC</td><td>3</td><td>1</td><td>0</td><td>2</td><td>-4</td><td>3</td></tr>
+      <tr><td>7</td><td>Infosys Strikers</td><td>3</td><td>0</td><td>0</td><td>3</td><td>-3</td><td>0</td></tr>
+      <tr><td>8</td><td>Quantum Kickers</td><td>3</td><td>0</td><td>0</td><td>3</td><td>-5</td><td>0</td></tr></table>
+    </section>
+    <section><h2>🎯 Top scorers — all tournaments</h2>
+      <table><tr><th>Player</th><th>Team</th><th>Points</th></tr>
+      <tr><td>Ravi Kaur</td><td>Agile Avengers</td><td><strong>135</strong></td></tr>
+      <tr><td>Kabir Mehta</td><td>Cloud Chasers</td><td>101</td></tr>
+      <tr><td>Sneha Patel</td><td>Silicon Sixers</td><td>99</td></tr>
+      <tr><td>Sneha Rao</td><td>Data Daredevils</td><td>96</td></tr>
+      <tr><td>Karan Sheikh</td><td>Silicon Sixers</td><td>91</td></tr>
+      <tr><td>Farah Singh</td><td>Kernel Kings</td><td>89</td></tr></table>
+      <h2 style="margin-top:22px">📊 Participation by sport</h2>
+      <p>Football — 128 players · 28 matches</p><div class="bar"><i style="width:100%"></i></div>
+      <p>Cricket — 90 players · 15 matches</p><div class="bar"><i style="width:70%;background:var(--green)"></i></div>
+      <p>Basketball — 40 players · registrations open</p><div class="bar"><i style="width:31%;background:var(--amber)"></i></div>
+      <p>Badminton — 32 players · 7 matches</p><div class="bar"><i style="width:25%;background:#db2777"></i></div>
+    </section>
+  </div>
+
+  <section><h2>🏟️ Tournaments</h2>
+    <table><tr><th>Tournament</th><th>Sport</th><th>Organisation</th><th>Teams</th><th>Progress</th><th>Status</th></tr>
+    <tr><td>Corporate Football Cup 2026</td><td>⚽ Football</td><td>SPOLTO</td><td>9</td><td>12 / 28 done</td><td>Live</td></tr>
+    <tr><td>Corporate Cricket League 2026</td><td>🏏 Cricket</td><td>Tech Mahindra</td><td>6</td><td>6 / 15 done</td><td>Live</td></tr>
+    <tr><td>SPOLTO Badminton Championship 2026</td><td>🏸 Badminton</td><td>SPOLTO</td><td>8</td><td>2 / 7 done</td><td>Live</td></tr>
+    <tr><td>Inter-Corporate Basketball League 2026</td><td>🏀 Basketball</td><td>Infosys</td><td>4</td><td>—</td><td>Registration open</td></tr></table>
+  </section>
+
+  <div class="grid">
+    <section><h2>🗄️ SQL Insights</h2><p style="color:var(--dim);font-size:13px">Standings are SQL aggregations over matches + match_events. Full schema and queries are in <code>sql/</code>.</p><pre>SELECT t.name, COUNT(m.id) AS played,
+ SUM(CASE WHEN winner THEN 3
+          WHEN draw THEN 1 ELSE 0 END) AS points
+FROM teams t LEFT JOIN matches m ...
+GROUP BY t.id
+ORDER BY points DESC, diff DESC</pre></section>
+    <section><h2>🐍 Python Analytics Engine</h2><p style="color:var(--dim);font-size:13px">Real, runnable Pandas code in <code>python/</code> — tested against the exported dataset.</p>
+    <span class="pill">fixture_generator.py — 28 fixtures, 7 rounds</span><span class="pill">standings_engine.py — cross-checks SQL</span><span class="pill">player_ratings.py — Priya Sheikh 6.2 top</span><span class="pill">insights_engine.py</span><span class="pill">form_analysis.py</span><span class="pill">validate_import.py</span>
+    <pre>$ python3 python/standings_engine.py
+1  CloudNine United  3 3 0 0  GD +5  9 pts
+2  FinEdge Warriors  3 2 1 0  GD +3  7 pts</pre></section>
+    <section><h2>📈 Power BI Reporting Layer</h2><p style="color:var(--dim);font-size:13px">Star schema in <code>powerbi/data/</code> with DAX measures in <code>powerbi/DAX_measures.md</code>.</p>
+    <table><tr><th>Measure</th><th>Value</th></tr><tr><td>Total Matches</td><td>50</td></tr><tr><td>Completion %</td><td>40%</td></tr><tr><td>Avg Score</td><td>99.0</td></tr><tr><td>Total Events</td><td>466</td></tr><tr><td>Live Matches</td><td>5</td></tr></table></section>
+  </div>
+
+  <section><h2>💡 Insights</h2><ul style="line-height:1.9;color:var(--dim)">
+    <li>CloudNine United leads team performance with a 100% win rate across 3 matches.</li>
+    <li>MCA Ground is the busiest venue with 15 matches scheduled.</li>
+    <li>2 results are awaiting verification — standings will move once they are locked.</li>
+    <li>Average winning margin across completed matches is 6.3 (Fact_Match) — favourites are winning comfortably.</li>
+  </ul></section>
+</main>
+<footer>PLAYBOOK · Built by Faizan Farooqui · SQL → Python → Power BI · <a href="https://github.com/mohdfaizanfarooqui/playbook_spolto">Source on GitHub</a></footer>
+</body>
+</html>
