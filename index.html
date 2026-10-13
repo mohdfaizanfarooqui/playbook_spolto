@@ -4,113 +4,237 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PLAYBOOK — Tournament Operating System</title>
-<meta name="description" content="PLAYBOOK — production-grade sports tournament management, live scoring, standings, analytics and operations platform. SQL Data Layer → Python Analytics Engine → Power BI Reporting Layer. Built by Faizan Farooqui for SPOLTO-type organisations.">
+<meta name="description" content="PLAYBOOK — production-grade sports tournament management, live scoring, standings, leaderboards and analytics. Built for SPOLTO. SQL → Python → Power BI.">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
-:root{--bg:#0b1220;--surface:#121c33;--surface2:#182642;--border:#24365e;--text:#eaf0ff;--dim:#93a5cc;--accent:#2e7cf6;--live:#e5484d;--green:#1f9d66;--amber:#e8930c}
-*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text)}
-a{color:var(--accent)}header{position:sticky;top:0;z-index:10;background:#0e1830;border-bottom:1px solid var(--border);padding:14px 20px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
-.logo{width:38px;height:38px;border-radius:10px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:20px}
-h1{font-size:22px;margin:0;letter-spacing:-.5px} .tag{color:var(--dim);font-size:11px;letter-spacing:.12em}
-main{max-width:1180px;margin:0 auto;padding:20px}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:18px 0}
-.kpi{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px}.kpi b{font-size:28px;display:block}.kpi span{color:var(--dim);font-size:13px}
-section{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px;margin:16px 0}
-h2{margin:0 0 12px;font-size:18px} table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:8px 10px;border-bottom:1px solid var(--border);text-align:left}th{color:var(--dim);font-weight:600}
-.live{display:inline-block;background:var(--live);color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}.grid section{margin:0}
-.match{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)} .score{font-weight:800;font-size:18px;white-space:nowrap}
-.bar{height:10px;background:var(--surface2);border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;background:var(--accent)}
-code,pre{font-family:ui-monospace,Menlo,monospace}pre{background:#0a0f1d;border:1px solid var(--border);border-radius:12px;padding:14px;overflow:auto;font-size:12px;line-height:1.5}
-footer{color:var(--dim);text-align:center;padding:28px;font-size:13px}.pill{display:inline-block;border:1px solid var(--border);border-radius:999px;padding:4px 10px;font-size:12px;color:var(--dim);margin:2px}
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--ink:#0f172a;--mut:#64748b;--bg:#f1f5f9;--card:#fff;--line:#e2e8f0;--indigo:#4f46e5;--violet:#7c3aed;--orange:#ea580c;--green:#16a34a;--red:#dc2626;--amber:#d97706;--cyan:#0891b2;--pink:#db2777}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--ink)}
+a{color:var(--indigo);text-decoration:none}
+/* HERO */
+.hero{position:relative;color:#fff;overflow:hidden}
+.hero img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero .shade{position:absolute;inset:0;background:linear-gradient(100deg,rgba(30,27,75,.92) 30%,rgba(76,29,149,.65) 60%,rgba(234,88,12,.35))}
+.hero .inner{position:relative;max-width:1180px;margin:0 auto;padding:64px 24px 52px}
+.brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:2px;font-size:14px;text-transform:uppercase}
+.brand .ball{font-size:30px}
+.livebadge{background:var(--red);color:#fff;padding:4px 12px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:1px;animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+.hero h1{font-size:56px;line-height:1.02;margin:20px 0 12px;font-weight:900}
+.hero h1 span{background:linear-gradient(90deg,#fbbf24,#f472b6,#38bdf8);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p.lead{font-size:18px;max-width:640px;color:#e0e7ff}
+.kpis{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+.kpi{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.25);backdrop-filter:blur(6px);border-radius:14px;padding:12px 18px;min-width:118px}
+.kpi b{font-size:26px;display:block}
+.kpi small{color:#c7d2fe;font-size:12px;text-transform:uppercase;letter-spacing:1px}
+.credit{margin-top:18px;font-size:12px;color:#c7d2fe}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 24px 60px}
+section{margin-top:38px}
+h2.st{font-size:24px;font-weight:800;display:flex;align-items:center;gap:10px}
+h2.st::after{content:"";flex:1;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--indigo),var(--pink),var(--orange))}
+.sub{color:var(--mut);margin:6px 0 16px;font-size:14px}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(330px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 2px 10px rgba(15,23,42,.05)}
+.card h3{font-size:15px;margin-bottom:6px}
+.card .hint{font-size:12px;color:var(--mut);margin-bottom:10px}
+canvas{width:100%!important}
+.stat{border-radius:16px;padding:20px;color:#fff}
+.stat b{font-size:34px;display:block}
+.stat small{text-transform:uppercase;letter-spacing:1px;font-size:12px;opacity:.9}
+.s1{background:linear-gradient(135deg,#4f46e5,#7c3aed)} .s2{background:linear-gradient(135deg,#dc2626,#f97316)}
+.s3{background:linear-gradient(135deg,#059669,#16a34a)} .s4{background:linear-gradient(135deg,#0891b2,#2563eb)}
+.s5{background:linear-gradient(135deg,#d97706,#ea580c)} .s6{background:linear-gradient(135deg,#db2777,#7c3aed)}
+.match{border-left:6px solid var(--red)}
+.match .score{font-size:22px;font-weight:800}
+.min{color:var(--red);font-weight:800}
+table{width:100%;border-collapse:collapse;font-size:14px;background:#fff;border-radius:12px;overflow:hidden}
+th{background:#1e1b4b;color:#fff;text-align:left;padding:11px 12px;font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+td{padding:10px 12px;border-bottom:1px solid var(--line)}
+tr.top td{background:#eef2ff;font-weight:700}
+.dot{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:8px;vertical-align:middle}
+.f{display:inline-block;width:22px;height:22px;line-height:22px;text-align:center;border-radius:50%;color:#fff;font-size:11px;font-weight:800;margin-right:3px}
+.fw{background:var(--green)} .fd{background:#94a3b8} .fl{background:var(--red)}
+.bar{height:12px;background:#e2e8f0;border-radius:999px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:999px}
+.timg{height:120px;border-radius:12px;background-size:cover;background-position:center;margin:-20px -20px 14px;border-radius:16px 16px 0 0}
+.gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.gallery figure{border-radius:16px;overflow:hidden;background:#fff;border:1px solid var(--line);box-shadow:0 2px 10px rgba(15,23,42,.06)}
+.gallery img{width:100%;height:190px;object-fit:cover;display:block}
+.gallery figcaption{padding:10px 14px;font-size:13px;color:var(--mut)}
+.pill{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;color:#fff}
+code,pre{font-family:ui-monospace,Consolas,monospace}
+pre{background:#0f172a;color:#a5f3fc;padding:16px;border-radius:12px;overflow:auto;font-size:12.5px;line-height:1.55}
+.tag{font-size:11px;font-weight:800;letter-spacing:1px;padding:3px 9px;border-radius:6px;color:#fff;text-transform:uppercase}
+footer{background:#1e1b4b;color:#c7d2fe;margin-top:50px}
+footer .wrap{padding-top:30px;padding-bottom:34px}
+.scoreline{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.scoreline:last-child{border-bottom:none}
+.big{font-size:30px;font-weight:900}
 </style>
 </head>
 <body>
-<header>
-  <div class="logo">P</div>
-  <div><h1>PLAYBOOK</h1><div class="tag">SQL DATA LAYER → PYTHON ANALYTICS ENGINE → POWER BI REPORTING</div></div>
-  <div style="margin-left:auto"><span class="live">● 5 LIVE</span></div>
+
+<header class="hero">
+  <img class="bg" src="https://spoltostoreprod.blob.core.windows.net/spolto-prod/frontend-static/HomePage/banner/img2.webp" alt="Young footballer at a Spolto event">
+  <div class="shade"></div>
+  <div class="inner">
+    <div class="brand"><span class="ball">🏆</span> PLAYBOOK · Tournament OS for SPOLTO <span class="livebadge">● 5 LIVE</span></div>
+    <h1>Every match. Every point.<br><span>One operating system.</span></h1>
+    <p class="lead">PLAYBOOK runs tournaments end to end — fixtures, live scoring, standings, leaderboards, verification and analytics — powered by a real stack: a SQL data layer, a Python analytics engine, and a Power BI reporting dashboard.</p>
+    <div class="kpis">
+      <div class="kpi"><b>50</b><small>Matches</small></div>
+      <div class="kpi"><b>27</b><small>Teams</small></div>
+      <div class="kpi"><b>290</b><small>Players</small></div>
+      <div class="kpi"><b>466</b><small>Match events</small></div>
+      <div class="kpi"><b>4</b><small>Tournaments</small></div>
+      <div class="kpi"><b>8</b><small>Venues</small></div>
+    </div>
+    <p class="credit">Hero photo: Spolto — from <a href="https://spolto.com" style="color:#fbbf24">spolto.com</a>, Spolto's official website. All data on this page is live output of the PLAYBOOK database.</p>
+  </div>
 </header>
-<main>
-  <p style="color:var(--dim);max-width:760px">Production-grade tournament operating system for organisations like <strong style="color:var(--text)">SPOLTO</strong> — tournaments, live scoring, standings, leaderboards, analytics, operations centre, RBAC and public pages. All critical calculations happen server-side in SQL, the Python/Pandas engine generates fixtures, ratings and insights, and Power BI consumes a star-schema dataset.</p>
 
-  <div class="kpis">
-    <div class="kpi"><b>4</b><span>Organisations</span></div>
-    <div class="kpi"><b>4</b><span>Tournaments</span></div>
-    <div class="kpi"><b>27</b><span>Teams</span></div>
-    <div class="kpi"><b>290</b><span>Players</span></div>
-    <div class="kpi"><b>50</b><span>Matches</span></div>
-    <div class="kpi"><b>20</b><span>Completed</span></div>
-    <div class="kpi"><b>466</b><span>Match events</span></div>
-    <div class="kpi"><b>8</b><span>Venues</span></div>
+<div class="wrap">
+
+<section>
+  <div class="grid g3">
+    <div class="stat s1"><b>50</b><small>⚽ Total matches · 20 completed (40%)</small></div>
+    <div class="stat s2"><b>5 LIVE</b><small>🔴 Being scored right now</small></div>
+    <div class="stat s3"><b>290</b><small>🧑‍🤝‍🧑 Registered players</small></div>
+    <div class="stat s4"><b>466</b><small>📊 Goals, runs, cards &amp; rallies logged</small></div>
+    <div class="stat s5"><b>99.0</b><small>🎯 Average match score</small></div>
+    <div class="stat s6"><b>2</b><small>✅ Results awaiting verification</small></div>
   </div>
+</section>
 
-  <section><h2>🔴 Live matches</h2>
-    <div class="match"><div><strong>TechM Titans vs CloudNine United</strong><br><small style="color:var(--dim)">FB-013 · Corporate Football Cup · SPOLTO Arena — Turf 1 · 34'</small></div><div class="score">0 – 3</div></div>
-    <div class="match"><div><strong>FinEdge Warriors vs DataWolves FC</strong><br><small style="color:var(--dim)">FB-014 · Corporate Football Cup · Turf 2 · 43'</small></div><div class="score">1 – 2</div></div>
-    <div class="match"><div><strong>Silicon Sixers vs Pixel Panthers</strong><br><small style="color:var(--dim)">CR-007 · Corporate Cricket League · MCA Ground · 34'</small></div><div class="score">159 – 111</div></div>
-    <div class="match"><div><strong>Agile Avengers vs Cloud Chasers</strong><br><small style="color:var(--dim)">CR-008 · Corporate Cricket League · MCA Ground · 43'</small></div><div class="score">115 – 139</div></div>
-    <div class="match" style="border:0"><div><strong>Net Ninjas vs Court Kings</strong><br><small style="color:var(--dim)">BD-003 · SPOLTO Badminton Championship · Indoor Court 3 · 18'</small></div><div class="score">15 – 12</div></div>
-  </section>
-
-  <div class="grid">
-    <section><h2>🏆 Standings — Corporate Football Cup 2026</h2><p style="color:var(--dim);font-size:13px">Computed server-side in SQL — never on the frontend.</p>
-      <table><tr><th>#</th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GD</th><th>Pts</th></tr>
-      <tr><td>1</td><td><strong>CloudNine United</strong></td><td>3</td><td>3</td><td>0</td><td>0</td><td>+5</td><td><strong>9</strong></td></tr>
-      <tr><td>2</td><td>FinEdge Warriors</td><td>3</td><td>2</td><td>1</td><td>0</td><td>+3</td><td>7</td></tr>
-      <tr><td>3</td><td>TechM Titans</td><td>3</td><td>2</td><td>0</td><td>1</td><td>+4</td><td>6</td></tr>
-      <tr><td>4</td><td>DataWolves FC</td><td>3</td><td>2</td><td>0</td><td>1</td><td>+1</td><td>6</td></tr>
-      <tr><td>5</td><td>Pune Paltan</td><td>3</td><td>1</td><td>1</td><td>1</td><td>-1</td><td>4</td></tr>
-      <tr><td>6</td><td>ByteForce FC</td><td>3</td><td>1</td><td>0</td><td>2</td><td>-4</td><td>3</td></tr>
-      <tr><td>7</td><td>Infosys Strikers</td><td>3</td><td>0</td><td>0</td><td>3</td><td>-3</td><td>0</td></tr>
-      <tr><td>8</td><td>Quantum Kickers</td><td>3</td><td>0</td><td>0</td><td>3</td><td>-5</td><td>0</td></tr></table>
-    </section>
-    <section><h2>🎯 Top scorers — all tournaments</h2>
-      <table><tr><th>Player</th><th>Team</th><th>Points</th></tr>
-      <tr><td>Ravi Kaur</td><td>Agile Avengers</td><td><strong>135</strong></td></tr>
-      <tr><td>Kabir Mehta</td><td>Cloud Chasers</td><td>101</td></tr>
-      <tr><td>Sneha Patel</td><td>Silicon Sixers</td><td>99</td></tr>
-      <tr><td>Sneha Rao</td><td>Data Daredevils</td><td>96</td></tr>
-      <tr><td>Karan Sheikh</td><td>Silicon Sixers</td><td>91</td></tr>
-      <tr><td>Farah Singh</td><td>Kernel Kings</td><td>89</td></tr></table>
-      <h2 style="margin-top:22px">📊 Participation by sport</h2>
-      <p>Football — 128 players · 28 matches</p><div class="bar"><i style="width:100%"></i></div>
-      <p>Cricket — 90 players · 15 matches</p><div class="bar"><i style="width:70%;background:var(--green)"></i></div>
-      <p>Basketball — 40 players · registrations open</p><div class="bar"><i style="width:31%;background:var(--amber)"></i></div>
-      <p>Badminton — 32 players · 7 matches</p><div class="bar"><i style="width:25%;background:#db2777"></i></div>
-    </section>
+<section>
+  <h2 class="st">📈 Analytics — charts from live data</h2>
+  <p class="sub">The same visuals that live in the Power BI report (PLAYBOOK.pbip in this repo), rendered here for the web. Every number is computed from the PLAYBOOK star schema.</p>
+  <div class="grid g2">
+    <div class="card"><h3>🥧 Matches by status</h3><p class="hint">Doughnut · Fact_Match · 50 matches</p><canvas id="statusChart" height="230"></canvas></div>
+    <div class="card"><h3>🥧 Players by sport</h3><p class="hint">Pie · Dim_Player · 290 players</p><canvas id="sportChart" height="230"></canvas></div>
+    <div class="card"><h3>📊 Team points — Corporate Football Cup</h3><p class="hint">Bar · SQL-computed standings</p><canvas id="pointsChart" height="230"></canvas></div>
+    <div class="card"><h3>📈 Matches per day</h3><p class="hint">Line · 6 – 12 Oct 2026 · 50 matches</p><canvas id="dayChart" height="230"></canvas></div>
+    <div class="card"><h3>🏟️ Venue utilisation</h3><p class="hint">Bar · matches hosted per venue</p><canvas id="venueChart" height="230"></canvas></div>
+    <div class="card"><h3>🏏 Top scorers</h3><p class="hint">Bar · total points across all sports</p><canvas id="scorerChart" height="230"></canvas></div>
   </div>
+</section>
 
-  <section><h2>🏟️ Tournaments</h2>
-    <table><tr><th>Tournament</th><th>Sport</th><th>Organisation</th><th>Teams</th><th>Progress</th><th>Status</th></tr>
-    <tr><td>Corporate Football Cup 2026</td><td>⚽ Football</td><td>SPOLTO</td><td>9</td><td>12 / 28 done</td><td>Live</td></tr>
-    <tr><td>Corporate Cricket League 2026</td><td>🏏 Cricket</td><td>Tech Mahindra</td><td>6</td><td>6 / 15 done</td><td>Live</td></tr>
-    <tr><td>SPOLTO Badminton Championship 2026</td><td>🏸 Badminton</td><td>SPOLTO</td><td>8</td><td>2 / 7 done</td><td>Live</td></tr>
-    <tr><td>Inter-Corporate Basketball League 2026</td><td>🏀 Basketball</td><td>Infosys</td><td>4</td><td>—</td><td>Registration open</td></tr></table>
-  </section>
-
-  <div class="grid">
-    <section><h2>🗄️ SQL Insights</h2><p style="color:var(--dim);font-size:13px">Standings are SQL aggregations over matches + match_events. Full schema and queries are in <code>sql/</code>.</p><pre>SELECT t.name, COUNT(m.id) AS played,
- SUM(CASE WHEN winner THEN 3
-          WHEN draw THEN 1 ELSE 0 END) AS points
-FROM teams t LEFT JOIN matches m ...
-GROUP BY t.id
-ORDER BY points DESC, diff DESC</pre></section>
-    <section><h2>🐍 Python Analytics Engine</h2><p style="color:var(--dim);font-size:13px">Real, runnable Pandas code in <code>python/</code> — tested against the exported dataset.</p>
-    <span class="pill">fixture_generator.py — 28 fixtures, 7 rounds</span><span class="pill">standings_engine.py — cross-checks SQL</span><span class="pill">player_ratings.py — Priya Sheikh 6.2 top</span><span class="pill">insights_engine.py</span><span class="pill">form_analysis.py</span><span class="pill">validate_import.py</span>
-    <pre>$ python3 python/standings_engine.py
-1  CloudNine United  3 3 0 0  GD +5  9 pts
-2  FinEdge Warriors  3 2 1 0  GD +3  7 pts</pre></section>
-    <section><h2>📈 Power BI Reporting Layer</h2><p style="color:var(--dim);font-size:13px">Star schema in <code>powerbi/data/</code> with DAX measures in <code>powerbi/DAX_measures.md</code>.</p>
-    <table><tr><th>Measure</th><th>Value</th></tr><tr><td>Total Matches</td><td>50</td></tr><tr><td>Completion %</td><td>40%</td></tr><tr><td>Avg Score</td><td>99.0</td></tr><tr><td>Total Events</td><td>466</td></tr><tr><td>Live Matches</td><td>5</td></tr></table></section>
+<section>
+  <h2 class="st">🔴 Live now</h2>
+  <p class="sub">Five matches being scored in real time across football, cricket and badminton.</p>
+  <div class="grid g2">
+    <div class="card match"><span class="tag" style="background:#dc2626">Football · <span class="min">34'</span></span><div class="score" style="margin-top:8px">TechM Titans 0 – 3 CloudNine United</div><p class="hint" style="margin:4px 0 0">Corporate Football Cup 2026 · MCA Turf 1, Pune</p></div>
+    <div class="card match"><span class="tag" style="background:#dc2626">Football · <span class="min">43'</span></span><div class="score" style="margin-top:8px">FinEdge Warriors 1 – 2 DataWolves FC</div><p class="hint" style="margin:4px 0 0">Corporate Football Cup 2026 · MCA Turf 2, Pune</p></div>
+    <div class="card match"><span class="tag" style="background:#d97706">Cricket · Live</span><div class="score" style="margin-top:8px">Silicon Sixers 159 – 111 Pixel Panthers</div><p class="hint" style="margin:4px 0 0">Corporate Cricket League 2026 · MCA Ground, Pune</p></div>
+    <div class="card match"><span class="tag" style="background:#d97706">Cricket · Live</span><div class="score" style="margin-top:8px">Agile Avengers 115 – 139 Cloud Chasers</div><p class="hint" style="margin:4px 0 0">Corporate Cricket League 2026 · MCA Ground, Pune</p></div>
+    <div class="card match"><span class="tag" style="background:#0891b2">Badminton · Live</span><div class="score" style="margin-top:8px">Net Ninjas 15 – 12 Court Kings</div><p class="hint" style="margin:4px 0 0">SPOLTO Badminton Championship 2026 · Indoor Court A</p></div>
   </div>
+</section>
 
-  <section><h2>💡 Insights</h2><ul style="line-height:1.9;color:var(--dim)">
-    <li>CloudNine United leads team performance with a 100% win rate across 3 matches.</li>
-    <li>MCA Ground is the busiest venue with 15 matches scheduled.</li>
-    <li>2 results are awaiting verification — standings will move once they are locked.</li>
-    <li>Average winning margin across completed matches is 6.3 (Fact_Match) — favourites are winning comfortably.</li>
-  </ul></section>
-</main>
-<footer>PLAYBOOK · Built by Faizan Farooqui · SQL → Python → Power BI · <a href="https://github.com/mohdfaizanfarooqui/playbook_spolto">Source on GitHub</a></footer>
+<section>
+  <h2 class="st">🏆 Standings — Corporate Football Cup 2026</h2>
+  <p class="sub">Computed in SQL from verified match scores (the exact query ships in <code>sql/queries.sql</code>), with the latest team added — Burger Boys, registered and ready for their first fixture.</p>
+  <table>
+    <tr><th>#</th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Form</th><th>Pts</th></tr>
+    <tr class="top"><td>1</td><td><span class="dot" style="background:#f59e0b"></span>CloudNine United</td><td>3</td><td>3</td><td>0</td><td>0</td><td>5</td><td>0</td><td>+5</td><td><span class="f fw">W</span><span class="f fw">W</span><span class="f fw">W</span></td><td><b>9</b></td></tr>
+    <tr><td>2</td><td><span class="dot" style="background:#2563eb"></span>FinEdge Warriors</td><td>3</td><td>2</td><td>1</td><td>0</td><td>4</td><td>1</td><td>+3</td><td><span class="f fw">W</span><span class="f fw">W</span><span class="f fd">D</span></td><td><b>7</b></td></tr>
+    <tr><td>3</td><td><span class="dot" style="background:#dc2626"></span>TechM Titans</td><td>3</td><td>2</td><td>0</td><td>1</td><td>5</td><td>2</td><td>+3</td><td><span class="f fw">W</span><span class="f fw">W</span><span class="f fl">L</span></td><td><b>6</b></td></tr>
+    <tr><td>4</td><td><span class="dot" style="background:#16a34a"></span>DataWolves FC</td><td>3</td><td>2</td><td>0</td><td>1</td><td>2</td><td>1</td><td>+1</td><td><span class="f fw">W</span><span class="f fl">L</span><span class="f fw">W</span></td><td><b>6</b></td></tr>
+    <tr><td>5</td><td><span class="dot" style="background:#db2777"></span>Pune Paltan</td><td>3</td><td>1</td><td>1</td><td>1</td><td>3</td><td>2</td><td>+1</td><td><span class="f fl">L</span><span class="f fw">W</span><span class="f fd">D</span></td><td><b>4</b></td></tr>
+    <tr><td>6</td><td><span class="dot" style="background:#7c3aed"></span>ByteForce FC</td><td>3</td><td>1</td><td>0</td><td>2</td><td>2</td><td>4</td><td>−2</td><td><span class="f fl">L</span><span class="f fl">L</span><span class="f fw">W</span></td><td><b>3</b></td></tr>
+    <tr><td>7</td><td><span class="dot" style="background:#0891b2"></span>Infosys Strikers</td><td>3</td><td>0</td><td>0</td><td>3</td><td>0</td><td>4</td><td>−4</td><td><span class="f fl">L</span><span class="f fl">L</span><span class="f fl">L</span></td><td><b>0</b></td></tr>
+    <tr><td>8</td><td><span class="dot" style="background:#64748b"></span>Quantum Kickers</td><td>3</td><td>0</td><td>0</td><td>3</td><td>0</td><td>7</td><td>−7</td><td><span class="f fl">L</span><span class="f fl">L</span><span class="f fl">L</span></td><td><b>0</b></td></tr>
+    <tr><td>9</td><td><span class="dot" style="background:#ea580c"></span>Burger Boys 🍔</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>—</td><td><b>0</b></td></tr>
+  </table>
+</section>
+
+<section>
+  <h2 class="st">🎯 Top scorers — all sports</h2>
+  <div class="grid g2">
+    <div class="card"><div class="scoreline"><span>🥇 <b>Ravi Kaur</b> · Agile Avengers</span><span class="big" style="color:#4f46e5">135</span></div><div class="scoreline"><span>🥈 <b>Kabir Mehta</b> · Quantum Quasars</span><span class="big" style="color:#7c3aed">101</span></div><div class="scoreline"><span>🥉 <b>Sneha Patel</b> · Net Ninjas</span><span class="big" style="color:#db2777">99</span></div></div>
+    <div class="card"><div class="scoreline"><span><b>Sneha Rao</b> · Pixel Panthers</span><b>96</b></div><div class="scoreline"><span><b>Karan Sheikh</b> · Agile Avengers</span><b>91</b></div><div class="scoreline"><span><b>Farah Singh</b> · Data Smashers</span><b>89</b></div><p class="hint" style="margin-top:10px">Top-rated player overall: <b>Priya Sheikh</b> (FinEdge Warriors), Python-computed rating 6.2, with Farah Reddy level on 6.2.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2 class="st">🗓️ Tournaments</h2>
+  <div class="grid g2">
+    <div class="card"><span class="pill" style="background:#dc2626">● LIVE</span> <span class="pill" style="background:#4f46e5">⚽ Football</span><h3 style="margin-top:10px">Corporate Football Cup 2026</h3><p class="hint">SPOLTO · League · Pune · 28 matches · 12 completed</p><div class="bar"><i style="width:43%;background:linear-gradient(90deg,#4f46e5,#db2777)"></i></div></div>
+    <div class="card"><span class="pill" style="background:#dc2626">● LIVE</span> <span class="pill" style="background:#d97706">🏏 Cricket</span><h3 style="margin-top:10px">Corporate Cricket League 2026</h3><p class="hint">Tech Mahindra · League · Pune · 15 matches · 6 completed</p><div class="bar"><i style="width:40%;background:linear-gradient(90deg,#d97706,#ea580c)"></i></div></div>
+    <div class="card"><span class="pill" style="background:#dc2626">● LIVE</span> <span class="pill" style="background:#0891b2">🏸 Badminton</span><h3 style="margin-top:10px">SPOLTO Badminton Championship 2026</h3><p class="hint">SPOLTO · Knockout · Pune · 7 matches · 2 completed</p><div class="bar"><i style="width:29%;background:linear-gradient(90deg,#0891b2,#2563eb)"></i></div></div>
+    <div class="card"><span class="pill" style="background:#16a34a">REGISTRATION OPEN</span> <span class="pill" style="background:#7c3aed">🏀 Basketball</span><h3 style="margin-top:10px">Inter-Corporate Basketball League 2026</h3><p class="hint">Infosys · League · Bengaluru · fixtures not yet published</p><div class="bar"><i style="width:4%;background:linear-gradient(90deg,#7c3aed,#db2777)"></i></div></div>
+  </div>
+</section>
+
+<section>
+  <h2 class="st">📸 Life at Spolto</h2>
+  <p class="sub">Real photos from Spolto's official website, <a href="https://spolto.com">spolto.com</a> — the coaching and events platform PLAYBOOK was built for.</p>
+  <div class="gallery">
+    <figure><img src="https://spoltostoreprod.blob.core.windows.net/spolto-prod/frontend-static/HomePage/banner/img2.webp" alt="Young goalkeeper at a Spolto football event"><figcaption>⚽ Youth football at a Spolto event, Pune</figcaption></figure>
+    <figure><img src="https://spoltostoreprod.blob.core.windows.net/spolto-prod/frontend-static/HomePage/banner/img1.webp" alt="Boxing coaching session at Spolto"><figcaption>🥊 One-on-one coaching, the Spolto way</figcaption></figure>
+    <figure><img src="https://spoltostoreprod.blob.core.windows.net/spolto-prod/frontend-static/HomePage/banner/img3.webp" alt="Boxing training with a Spolto coach"><figcaption>🥊 Training with a certified Spolto coach</figcaption></figure>
+    <figure><img src="https://spoltostoreprod.blob.core.windows.net/spolto-prod/blog/DSC03923.JPG" alt="Spolto community event photo"><figcaption>🎉 From the Spolto community — events and meetups</figcaption></figure>
+  </div>
+</section>
+
+<section>
+  <h2 class="st">📊 Power BI — the real dashboard lives here</h2>
+  <p class="sub">This repo contains an actual Power BI project, <b>powerbi/PLAYBOOK.pbip</b> — open it in Power BI Desktop (free) and publish it to app.powerbi.com. Its report has three pages: <b>Overview</b> (KPI cards, pie of matches by status, matches by sport and by date, slicers), <b>Standings &amp; Venues</b> and <b>Insights</b>. Steps are in <code>powerbi/PUBLISH_GUIDE.md</code>.</p>
+  <div class="grid g4">
+    <div class="card" style="text-align:center"><div class="big" style="color:#4f46e5">50</div><small>Total Matches</small><br><code>COUNTROWS(Fact_Match)</code></div>
+    <div class="card" style="text-align:center"><div class="big" style="color:#dc2626">5</div><small>Live Matches</small><br><code>CALCULATE(...,"live")</code></div>
+    <div class="card" style="text-align:center"><div class="big" style="color:#16a34a">40%</div><small>Completion %</small><br><code>DIVIDE(Completed, Total)</code></div>
+    <div class="card" style="text-align:center"><div class="big" style="color:#d97706">6.3</div><small>Avg Margin</small><br><code>AVERAGE(Fact_Match[Margin])</code></div>
+  </div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card"><h3>Star schema dataset</h3><p class="hint">Fact_Match (50 rows) · Fact_Event (466) · Dim_Team (27) · Dim_Player (290) · Dim_Venue (8) · Dim_Tournament (4) — CSVs in <code>powerbi/data/</code>, full DAX in <code>powerbi/DAX_measures.md</code>.</p></div>
+    <div class="card"><h3>Busiest venue</h3><p class="hint"><b>MCA Ground, Pune</b> — 15 of the 50 matches, ahead of MCA Turf 1 and Turf 2 (14 each). Venue slicers in the Power BI report cut every visual by ground, sport and tournament.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2 class="st">🗄️ SQL data layer · 🐍 Python engine</h2>
+  <div class="grid g2">
+    <div class="card"><h3>SQL — standings, computed server-side</h3><pre>SELECT t.team_name,
+  COUNT(*) AS played,
+  SUM(CASE WHEN ... THEN 1 ELSE 0 END) AS won,
+  SUM(goals_for - goals_against) AS gd,
+  SUM(points) AS pts
+FROM match_results
+GROUP BY t.team_name
+ORDER BY pts DESC, gd DESC;</pre><p class="hint" style="margin-top:8px">Full schema and queries: <code>sql/schema.sql</code>, <code>sql/queries.sql</code>. PostgreSQL-compatible.</p></div>
+    <div class="card"><h3>Python — analytics engine</h3><pre>$ python python/fixture_generator.py
+# 28 fixtures across 7 rounds (round-robin)
+
+$ python python/standings_engine.py
+# CloudNine United — 9 pts, GD +5 ✔
+
+$ python python/insights_engine.py
+# 50 matches · 20 completed · 5 live
+# avg winning margin 6.3</pre><p class="hint" style="margin-top:8px">Engines in <code>python/</code>: standings, fixtures, ratings, insights, form analysis, import validation.</p></div>
+  </div>
+</section>
+
+</div>
+<footer><div class="wrap">
+  <p><b style="color:#fff">PLAYBOOK</b> — built for SPOLTO by Faizan Farooqui · <a href="https://github.com/mohdfaizanfarooqui/playbook_spolto" style="color:#fbbf24">Source on GitHub</a> · <a href="https://spolto.com" style="color:#fbbf24">spolto.com</a></p>
+  <p style="margin-top:8px;font-size:13px">Architecture: SQL data layer → Python analytics engine → Power BI reporting (PLAYBOOK.pbip). This web page is the zero-build public preview of the same verified data. Photos © Spolto, used from spolto.com.</p>
+</div></footer>
+
+<script>
+const C = ['#4f46e5','#dc2626','#16a34a','#d97706','#0891b2','#db2777','#7c3aed','#ea580c'];
+if (window.Chart) {
+  Chart.defaults.font.family = "'Segoe UI', system-ui, sans-serif";
+  new Chart(document.getElementById('statusChart'), {type:'doughnut', data:{labels:['Completed','Live','Scheduled','Awaiting verification','Postponed','Cancelled'], datasets:[{data:[20,5,21,2,1,1], backgroundColor:C}]}, options:{plugins:{legend:{position:'bottom'}}}});
+  new Chart(document.getElementById('sportChart'), {type:'pie', data:{labels:['Football — 128','Cricket — 90','Basketball — 40','Badminton — 32'], datasets:[{data:[128,90,40,32], backgroundColor:['#4f46e5','#d97706','#7c3aed','#0891b2']}]}, options:{plugins:{legend:{position:'bottom'}}}});
+  new Chart(document.getElementById('pointsChart'), {type:'bar', data:{labels:['CloudNine Utd','FinEdge','TechM Titans','DataWolves','Pune Paltan','ByteForce'], datasets:[{label:'Points', data:[9,7,6,6,4,3], backgroundColor:C}]}, options:{plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true, ticks:{stepSize:1}}}}});
+  new Chart(document.getElementById('dayChart'), {type:'line', data:{labels:['6 Oct','7 Oct','8 Oct','9 Oct','10 Oct','11 Oct','12 Oct'], datasets:[{label:'Matches', data:[4,7,11,9,8,7,4], borderColor:'#db2777', backgroundColor:'rgba(219,39,119,.15)', fill:true, tension:.35, pointBackgroundColor:'#4f46e5'}]}, options:{plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true}}}});
+  new Chart(document.getElementById('venueChart'), {type:'bar', data:{labels:['MCA Ground','MCA Turf 1','MCA Turf 2','Indoor Court A','Indoor Court B','Indoor Court C'], datasets:[{label:'Matches hosted', data:[15,14,14,3,2,2], backgroundColor:C}]}, options:{indexAxis:'y', plugins:{legend:{display:false}}, scales:{x:{beginAtZero:true}}}});
+  new Chart(document.getElementById('scorerChart'), {type:'bar', data:{labels:['Ravi Kaur','Kabir Mehta','Sneha Patel','Sneha Rao','Karan Sheikh','Farah Singh'], datasets:[{label:'Points', data:[135,101,99,96,91,89], backgroundColor:C}]}, options:{indexAxis:'y', plugins:{legend:{display:false}}, scales:{x:{beginAtZero:true}}}});
+}
+</script>
 </body>
 </html>
