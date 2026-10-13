@@ -83,3 +83,10 @@ SQL (SQLite/PostgreSQL-compatible schema), Python, Pandas, Power BI (DAX, star s
 **Faizan Farooqui** — Data Science and ML Trainee, Matsuo-Iwasawa Lab, University of Tokyo (GCI programme); Technology and Data Operations Coordinator at SPOLTO (May–Sep 2026).
 
 MIT License — see `LICENSE`.
+
+---
+
+## Updates — 13 Oct 2026
+
+- **Dashboard v2:** colourful redesign with real photos from [spolto.com](https://spolto.com) and six live charts (matches by status doughnut, players by sport pie, team points, matches per day, venue utilisation, top scorers).
+- **Power BI project:** `powerbi/PLAYBOOK.pbip` — a complete Power BI project (star-schema semantic model, 9 DAX measures, 3-page report with 17 visuals). Open it in Power BI Desktop and publish to app.powerbi.com — see `powerbi/PUBLISH_GUIDE.md`. Note: opened from the repo CSVs, two measures compute on the extract (Avg Margin 5.3); the web dashboard shows the live app's DAX outputs (6.3, Avg Score 99.0).
