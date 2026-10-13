@@ -1,0 +1,5 @@
+TournamentKey,TournamentName,Sport,Format,Status,StartDate,EndDate
+1,Corporate Football Cup 2026,Football,league,live,2026-10-06,2026-10-12
+2,Corporate Cricket League 2026,Cricket,league,live,2026-10-07,2026-10-14
+3,SPOLTO Badminton Championship 2026,Badminton,knockout,live,2026-10-08,2026-10-10
+4,Inter-Corporate Basketball League 2026,Basketball,round_robin,registration_open,2026-10-20,2026-10-30
