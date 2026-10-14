@@ -1,0 +1,83 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.6.0/schema.json",
+  "name": "slicerTournament",
+  "position": {
+    "x": 840,
+    "y": 130,
+    "z": 12,
+    "width": 205,
+    "height": 260,
+    "tabOrder": 12
+  },
+  "visual": {
+    "visualType": "slicer",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Source": "tr"
+                    }
+                  },
+                  "Property": "TournamentName"
+                }
+              },
+              "queryRef": "Dim_Tournament.TournamentName",
+              "nativeQueryRef": "TournamentName"
+            }
+          ]
+        }
+      }
+    },
+    "prototypeQuery": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "tr",
+          "Entity": "Dim_Tournament",
+          "Type": 0
+        }
+      ],
+      "Select": [
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "tr"
+              }
+            },
+            "Property": "TournamentName"
+          },
+          "Name": "Dim_Tournament.TournamentName"
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true,
+    "objects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Tournament'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
