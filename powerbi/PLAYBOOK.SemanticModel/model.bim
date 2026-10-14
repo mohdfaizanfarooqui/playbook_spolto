@@ -1,0 +1,421 @@
+{
+  "name": "PLAYBOOK",
+  "compatibilityLevel": 1600,
+  "model": {
+    "culture": "en-US",
+    "expressions": [
+      {
+        "name": "DataFolder",
+        "kind": "m",
+        "expression": "\"..\\data\"",
+        "description": "Folder containing the PLAYBOOK CSV exports. Default '..\\data' is relative to the PLAYBOOK.SemanticModel folder; in Power BI Desktop set it to the full path of the powerbi/data folder."
+      }
+    ],
+    "tables": [
+      {
+        "name": "Fact_Match",
+        "columns": [
+          {
+            "name": "MatchKey",
+            "dataType": "int64",
+            "sourceColumn": "MatchKey",
+            "summarizeBy": "sum"
+          },
+          {
+            "name": "MatchCode",
+            "dataType": "string",
+            "sourceColumn": "MatchCode",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "TournamentKey",
+            "dataType": "int64",
+            "sourceColumn": "TournamentKey",
+            "summarizeBy": "sum"
+          },
+          {
+            "name": "TeamAKey",
+            "dataType": "int64",
+            "sourceColumn": "TeamAKey",
+            "summarizeBy": "sum"
+          },
+          {
+            "name": "TeamBKey",
+            "dataType": "int64",
+            "sourceColumn": "TeamBKey",
+            "summarizeBy": "sum"
+          },
+          {
+            "name": "VenueKey",
+            "dataType": "int64",
+            "sourceColumn": "VenueKey",
+            "summarizeBy": "sum"
+          },
+          {
+            "name": "Date",
+            "dataType": "dateTime",
+            "sourceColumn": "Date",
+            "summarizeBy": "none",
+            "formatString": "yyyy-mm-dd"
+          },
+          {
+            "name": "Stage",
+            "dataType": "string",
+            "sourceColumn": "Stage",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "Round",
+            "dataType": "int64",
+            "sourceColumn": "Round",
+            "summarizeBy": "sum"
+          },
+          {
+            "name": "Status",
+            "dataType": "string",
+            "sourceColumn": "Status",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "ScoreA",
+            "dataType": "int64",
+            "sourceColumn": "ScoreA",
+            "summarizeBy": "sum"
+          },
+          {
+            "name": "ScoreB",
+            "dataType": "int64",
+            "sourceColumn": "ScoreB",
+            "summarizeBy": "sum"
+          },
+          {
+            "name": "TotalPoints",
+            "dataType": "int64",
+            "sourceColumn": "TotalPoints",
+            "summarizeBy": "sum"
+          },
+          {
+            "name": "Margin",
+            "dataType": "double",
+            "sourceColumn": "Margin",
+            "summarizeBy": "sum"
+          },
+          {
+            "name": "WinnerTeamKey",
+            "dataType": "int64",
+            "sourceColumn": "WinnerTeamKey",
+            "summarizeBy": "sum"
+          },
+          {
+            "name": "Minute",
+            "dataType": "int64",
+            "sourceColumn": "Minute",
+            "summarizeBy": "sum"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Fact_Match",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = Csv.Document(File.Contents(DataFolder & \"\\Fact_Match.csv\"),[Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.None]),",
+                "    #\"Promoted Headers\" = Table.PromoteHeaders(Source, [PromoteAllTypes=true]),",
+                "    #\"Replaced Blanks\" = Table.ReplaceValue(#\"Promoted Headers\", \"\", null, Replacer.ReplaceValue, {\"WinnerTeamKey\"}),",
+                "    #\"Changed Type\" = Table.TransformColumnTypes(#\"Replaced Blanks\", {{\"MatchKey\", Int64.Type}, {\"MatchCode\", type text}, {\"TournamentKey\", Int64.Type}, {\"TeamAKey\", Int64.Type}, {\"TeamBKey\", Int64.Type}, {\"VenueKey\", Int64.Type}, {\"Date\", type date}, {\"Stage\", type text}, {\"Round\", Int64.Type}, {\"Status\", type text}, {\"ScoreA\", Int64.Type}, {\"ScoreB\", Int64.Type}, {\"TotalPoints\", Int64.Type}, {\"Margin\", type number}, {\"WinnerTeamKey\", Int64.Type}, {\"Minute\", Int64.Type}})",
+                "in",
+                "    #\"Changed Type\""
+              ]
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "Total Matches",
+            "expression": "COUNTROWS(Fact_Match)",
+            "formatString": "0",
+            "displayFolder": "KPIs"
+          },
+          {
+            "name": "Completed Matches",
+            "expression": "CALCULATE([Total Matches], Fact_Match[Status] IN {\"completed\", \"verified\"})",
+            "formatString": "0",
+            "displayFolder": "KPIs",
+            "description": "Matches finished and verified (completed + verified statuses in the export)."
+          },
+          {
+            "name": "Live Matches",
+            "expression": "CALCULATE([Total Matches], Fact_Match[Status] = \"live\")",
+            "formatString": "0",
+            "displayFolder": "KPIs"
+          },
+          {
+            "name": "Completion %",
+            "expression": "DIVIDE([Completed Matches], [Total Matches])",
+            "formatString": "0.0%",
+            "displayFolder": "KPIs"
+          },
+          {
+            "name": "Avg Match Score",
+            "expression": "AVERAGE(Fact_Match[TotalPoints])",
+            "formatString": "0.0",
+            "displayFolder": "KPIs",
+            "description": "Average combined score per match (TotalPoints); scores combine sports."
+          },
+          {
+            "name": "Avg Margin",
+            "expression": "AVERAGE(Fact_Match[Margin])",
+            "formatString": "0.0",
+            "displayFolder": "KPIs"
+          },
+          {
+            "name": "Total Players",
+            "expression": "290",
+            "formatString": "0",
+            "displayFolder": "KPIs",
+            "description": "Documented constant from the Dim_Player full export (290 players); the player dimension is not shipped as a CSV in this repo."
+          },
+          {
+            "name": "Total Events",
+            "expression": "466",
+            "formatString": "0",
+            "displayFolder": "KPIs",
+            "description": "Documented constant from the Fact_Event full export (466 match events); the event fact is not shipped as a CSV in this repo."
+          },
+          {
+            "name": "Verified Results",
+            "expression": "CALCULATE([Total Matches], Fact_Match[Status] = \"verified\")",
+            "formatString": "0",
+            "displayFolder": "KPIs"
+          }
+        ]
+      },
+      {
+        "name": "Dim_Team",
+        "columns": [
+          {
+            "name": "TeamKey",
+            "dataType": "int64",
+            "sourceColumn": "TeamKey",
+            "summarizeBy": "sum"
+          },
+          {
+            "name": "TeamName",
+            "dataType": "string",
+            "sourceColumn": "TeamName",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "ShortName",
+            "dataType": "string",
+            "sourceColumn": "ShortName",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "TournamentKey",
+            "dataType": "int64",
+            "sourceColumn": "TournamentKey",
+            "summarizeBy": "sum"
+          },
+          {
+            "name": "Group",
+            "dataType": "string",
+            "sourceColumn": "Group",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "Captain",
+            "dataType": "string",
+            "sourceColumn": "Captain",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "Manager",
+            "dataType": "string",
+            "sourceColumn": "Manager",
+            "summarizeBy": "none"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Dim_Team",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = Csv.Document(File.Contents(DataFolder & \"\\Dim_Team.csv\"),[Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.None]),",
+                "    #\"Promoted Headers\" = Table.PromoteHeaders(Source, [PromoteAllTypes=true]),",
+                "    #\"Changed Type\" = Table.TransformColumnTypes(#\"Promoted Headers\", {{\"TeamKey\", Int64.Type}, {\"TeamName\", type text}, {\"ShortName\", type text}, {\"TournamentKey\", Int64.Type}, {\"Group\", type text}, {\"Captain\", type text}, {\"Manager\", type text}})",
+                "in",
+                "    #\"Changed Type\""
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Dim_Venue",
+        "columns": [
+          {
+            "name": "VenueKey",
+            "dataType": "int64",
+            "sourceColumn": "VenueKey",
+            "summarizeBy": "sum"
+          },
+          {
+            "name": "VenueName",
+            "dataType": "string",
+            "sourceColumn": "VenueName",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "City",
+            "dataType": "string",
+            "sourceColumn": "City",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "Capacity",
+            "dataType": "int64",
+            "sourceColumn": "Capacity",
+            "summarizeBy": "sum"
+          },
+          {
+            "name": "Surface",
+            "dataType": "string",
+            "sourceColumn": "Surface",
+            "summarizeBy": "none"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Dim_Venue",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = Csv.Document(File.Contents(DataFolder & \"\\Dim_Venue.csv\"),[Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.None]),",
+                "    #\"Promoted Headers\" = Table.PromoteHeaders(Source, [PromoteAllTypes=true]),",
+                "    #\"Changed Type\" = Table.TransformColumnTypes(#\"Promoted Headers\", {{\"VenueKey\", Int64.Type}, {\"VenueName\", type text}, {\"City\", type text}, {\"Capacity\", Int64.Type}, {\"Surface\", type text}})",
+                "in",
+                "    #\"Changed Type\""
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "Dim_Tournament",
+        "columns": [
+          {
+            "name": "TournamentKey",
+            "dataType": "int64",
+            "sourceColumn": "TournamentKey",
+            "summarizeBy": "sum"
+          },
+          {
+            "name": "TournamentName",
+            "dataType": "string",
+            "sourceColumn": "TournamentName",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "Sport",
+            "dataType": "string",
+            "sourceColumn": "Sport",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "Format",
+            "dataType": "string",
+            "sourceColumn": "Format",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "Status",
+            "dataType": "string",
+            "sourceColumn": "Status",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "StartDate",
+            "dataType": "dateTime",
+            "sourceColumn": "StartDate",
+            "summarizeBy": "none",
+            "formatString": "yyyy-mm-dd"
+          },
+          {
+            "name": "EndDate",
+            "dataType": "dateTime",
+            "sourceColumn": "EndDate",
+            "summarizeBy": "none",
+            "formatString": "yyyy-mm-dd"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Dim_Tournament",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "    Source = Csv.Document(File.Contents(DataFolder & \"\\Dim_Tournament.csv\"),[Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.None]),",
+                "    #\"Promoted Headers\" = Table.PromoteHeaders(Source, [PromoteAllTypes=true]),",
+                "    #\"Changed Type\" = Table.TransformColumnTypes(#\"Promoted Headers\", {{\"TournamentKey\", Int64.Type}, {\"TournamentName\", type text}, {\"Sport\", type text}, {\"Format\", type text}, {\"Status\", type text}, {\"StartDate\", type date}, {\"EndDate\", type date}})",
+                "in",
+                "    #\"Changed Type\""
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "relationships": [
+      {
+        "name": "HomeTeam",
+        "fromTable": "Fact_Match",
+        "fromColumn": "TeamAKey",
+        "toTable": "Dim_Team",
+        "toColumn": "TeamKey",
+        "isActive": true,
+        "crossFilteringBehavior": "oneDirection",
+        "securityFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "AwayTeam",
+        "fromTable": "Fact_Match",
+        "fromColumn": "TeamBKey",
+        "toTable": "Dim_Team",
+        "toColumn": "TeamKey",
+        "isActive": false,
+        "crossFilteringBehavior": "oneDirection",
+        "securityFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "Venue",
+        "fromTable": "Fact_Match",
+        "fromColumn": "VenueKey",
+        "toTable": "Dim_Venue",
+        "toColumn": "VenueKey",
+        "isActive": true,
+        "crossFilteringBehavior": "oneDirection",
+        "securityFilteringBehavior": "oneDirection"
+      },
+      {
+        "name": "Tournament",
+        "fromTable": "Fact_Match",
+        "fromColumn": "TournamentKey",
+        "toTable": "Dim_Tournament",
+        "toColumn": "TournamentKey",
+        "isActive": true,
+        "crossFilteringBehavior": "oneDirection",
+        "securityFilteringBehavior": "oneDirection"
+      }
+    ]
+  }
+}
