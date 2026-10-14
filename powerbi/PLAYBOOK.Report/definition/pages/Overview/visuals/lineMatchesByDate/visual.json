@@ -1,0 +1,127 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.6.0/schema.json",
+  "name": "lineMatchesByDate",
+  "position": {
+    "x": 0,
+    "y": 410,
+    "z": 14,
+    "width": 1280,
+    "height": 290,
+    "tabOrder": 14
+  },
+  "visual": {
+    "visualType": "lineChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Source": "f"
+                    }
+                  },
+                  "Property": "Date"
+                }
+              },
+              "queryRef": "Fact_Match.Date",
+              "nativeQueryRef": "Date"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Source": "f"
+                    }
+                  },
+                  "Property": "Total Matches"
+                }
+              },
+              "queryRef": "Fact_Match.Total Matches",
+              "nativeQueryRef": "Total Matches"
+            }
+          ]
+        }
+      }
+    },
+    "prototypeQuery": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "f",
+          "Entity": "Fact_Match",
+          "Type": 0
+        }
+      ],
+      "Select": [
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "f"
+              }
+            },
+            "Property": "Date"
+          },
+          "Name": "Fact_Match.Date"
+        },
+        {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "f"
+              }
+            },
+            "Property": "Total Matches"
+          },
+          "Name": "Fact_Match.Total Matches"
+        }
+      ],
+      "OrderBy": [
+        {
+          "Direction": 1,
+          "Expression": {
+            "Column": {
+              "Expression": {
+                "SourceRef": {
+                  "Source": "f"
+                }
+              },
+              "Property": "Date"
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true,
+    "objects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Matches by Date'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
