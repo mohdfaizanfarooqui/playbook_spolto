@@ -1,0 +1,83 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.6.0/schema.json",
+  "name": "cardTotalEvents",
+  "position": {
+    "x": 0,
+    "y": 360,
+    "z": 2,
+    "width": 620,
+    "height": 160,
+    "tabOrder": 2
+  },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Source": "f"
+                    }
+                  },
+                  "Property": "Total Events"
+                }
+              },
+              "queryRef": "Fact_Match.Total Events",
+              "nativeQueryRef": "Total Events"
+            }
+          ]
+        }
+      }
+    },
+    "prototypeQuery": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "f",
+          "Entity": "Fact_Match",
+          "Type": 0
+        }
+      ],
+      "Select": [
+        {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "f"
+              }
+            },
+            "Property": "Total Events"
+          },
+          "Name": "Fact_Match.Total Events"
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true,
+    "objects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Total Events'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
