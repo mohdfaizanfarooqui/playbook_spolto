@@ -1,0 +1,117 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.6.0/schema.json",
+  "name": "barMatchesByVenue",
+  "position": {
+    "x": 0,
+    "y": 0,
+    "z": 0,
+    "width": 640,
+    "height": 360,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "barChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Source": "v"
+                    }
+                  },
+                  "Property": "VenueName"
+                }
+              },
+              "queryRef": "Dim_Venue.VenueName",
+              "nativeQueryRef": "VenueName"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Source": "f"
+                    }
+                  },
+                  "Property": "Total Matches"
+                }
+              },
+              "queryRef": "Fact_Match.Total Matches",
+              "nativeQueryRef": "Total Matches"
+            }
+          ]
+        }
+      }
+    },
+    "prototypeQuery": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "v",
+          "Entity": "Dim_Venue",
+          "Type": 0
+        },
+        {
+          "Name": "f",
+          "Entity": "Fact_Match",
+          "Type": 0
+        }
+      ],
+      "Select": [
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "v"
+              }
+            },
+            "Property": "VenueName"
+          },
+          "Name": "Dim_Venue.VenueName"
+        },
+        {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "f"
+              }
+            },
+            "Property": "Total Matches"
+          },
+          "Name": "Fact_Match.Total Matches"
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true,
+    "objects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Matches by Venue'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
