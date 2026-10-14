@@ -1,0 +1,117 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.6.0/schema.json",
+  "name": "barMatchesByTournament",
+  "position": {
+    "x": 0,
+    "y": 0,
+    "z": 0,
+    "width": 620,
+    "height": 340,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "barChart",
+    "query": {
+      "queryState": {
+        "Category": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Source": "tr"
+                    }
+                  },
+                  "Property": "TournamentName"
+                }
+              },
+              "queryRef": "Dim_Tournament.TournamentName",
+              "nativeQueryRef": "TournamentName"
+            }
+          ]
+        },
+        "Y": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Source": "f"
+                    }
+                  },
+                  "Property": "Total Matches"
+                }
+              },
+              "queryRef": "Fact_Match.Total Matches",
+              "nativeQueryRef": "Total Matches"
+            }
+          ]
+        }
+      }
+    },
+    "prototypeQuery": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "tr",
+          "Entity": "Dim_Tournament",
+          "Type": 0
+        },
+        {
+          "Name": "f",
+          "Entity": "Fact_Match",
+          "Type": 0
+        }
+      ],
+      "Select": [
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "tr"
+              }
+            },
+            "Property": "TournamentName"
+          },
+          "Name": "Dim_Tournament.TournamentName"
+        },
+        {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "f"
+              }
+            },
+            "Property": "Total Matches"
+          },
+          "Name": "Fact_Match.Total Matches"
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true,
+    "objects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Matches by Tournament'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
