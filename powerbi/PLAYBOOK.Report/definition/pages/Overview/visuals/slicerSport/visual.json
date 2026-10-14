@@ -1,0 +1,83 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.6.0/schema.json",
+  "name": "slicerSport",
+  "position": {
+    "x": 1055,
+    "y": 130,
+    "z": 13,
+    "width": 225,
+    "height": 260,
+    "tabOrder": 13
+  },
+  "visual": {
+    "visualType": "slicer",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Source": "tr"
+                    }
+                  },
+                  "Property": "Sport"
+                }
+              },
+              "queryRef": "Dim_Tournament.Sport",
+              "nativeQueryRef": "Sport"
+            }
+          ]
+        }
+      }
+    },
+    "prototypeQuery": {
+      "Version": 2,
+      "From": [
+        {
+          "Name": "tr",
+          "Entity": "Dim_Tournament",
+          "Type": 0
+        }
+      ],
+      "Select": [
+        {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Source": "tr"
+              }
+            },
+            "Property": "Sport"
+          },
+          "Name": "Dim_Tournament.Sport"
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true,
+    "objects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Sport'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
